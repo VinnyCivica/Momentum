@@ -827,7 +827,6 @@ p.alert-body,span.alert-body{display:block}
 .alert h3.alert-title,.alert h4.alert-title{font-weight:var(--app-weight-bold)}
 .alert-body ul{margin:var(--ff-dimension-d-1) 0 0;padding-left:1.5em;display:grid;gap:var(--ff-dimension-d-2)}
 .alert-body .form-check-label{font-weight:var(--app-weight-regular)}
-.check-group{margin-top:var(--ff-dimension-d-1_5)}
 /* links in an error alert take the alert's link colour (FormErrorSummary: color inherit) */
 .alert-error a:not([class]),.alert-error a:not([class]):visited{color:var(--ff-component-alert-negative-foreground-links)}
 
@@ -1011,15 +1010,24 @@ a.dd-item{text-decoration:none}
 .spin{animation:app-spin 1s linear infinite}
 @keyframes app-spin{to{transform:rotate(360deg)}}
 .result{margin-top:var(--ff-dimension-d-7)}
-/* v6: Worth your attention is a fieldset of Alerts, each with a "reviewed" checkbox */
+/* v6: Worth your attention is a fieldset of Firefly Item cards, each with a two-option RadioGroup */
 .attn{margin:0;padding:0;border:0;min-width:0}
 .attn.result{margin-top:var(--ff-dimension-d-7)}
 .collate .err-sum{margin:0 0 var(--ff-dimension-d-5)}
 .attn legend{padding:0}
 .attn #attn-hint{margin-top:var(--ff-dimension-d-1)}
-.attn .alert-body p{margin:0}
+/* Firefly Item (FireflyItem): 2px border, 16px radius, 16px padding, 72px minimum height; RadioGroup options stacked */
+.attn-items{list-style:none;margin:var(--ff-dimension-d-3) 0 0;padding:0;display:flex;flex-direction:column;gap:var(--ff-dimension-d-3)}
+.ff-item{display:flex;flex-direction:column;justify-content:center;gap:var(--ff-dimension-d-1);min-height:72px;padding:var(--ff-dimension-d-4);
+  border:var(--ff-border-width-w-300) solid var(--ff-color-border-decorative);border-radius:var(--ff-radius-container)}
+.ff-item-title{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ff-dimension-d-1) var(--ff-dimension-d-2);margin:0}
+.ff-item-desc{margin:0;color:var(--ff-color-surface-primary-foreground-subtle)}
+.ff-radios{display:flex;flex-direction:column;margin:var(--ff-dimension-d-1) 0 0;padding:0;border:0;min-width:0}
+.ff-radios legend{padding:0}
+.ff-radios-opts{display:flex;flex-direction:column}
 /* Check before you accept: each item is a fieldset whose legend is the item, with Checked / Follow up later */
-.check-choice{margin:var(--ff-dimension-d-3) 0 0;padding:0;border:0;min-width:0}
+.check-choice{margin:0;padding:0;border:0;min-width:0}
+.checks>h3+p{margin-top:var(--ff-dimension-d-1)}
 .check-choice legend{padding:0;color:inherit}
 .ack .field-error{margin-left:0}
 .detail>.err-sum{margin:0 0 var(--ff-dimension-d-5)}
@@ -1181,6 +1189,7 @@ a.dd-item{text-decoration:none}
 .dt-sort-ic{flex:none;width:var(--ff-dimension-d-4);height:var(--ff-dimension-d-4)}
 .dt th.dt-sorted{background:var(--ff-color-interactive-hover-background)}
 .dt td.dt-sorted{background-color:var(--ff-color-surface-secondary-background)}
+.sum-actions{margin-top:var(--ff-dimension-d-4)}
 
 /* ---- utilities.css ---- */
 /* Spacing helpers that replace v4.4's inline margin styles. Loaded last so they win over component margins,
@@ -1436,6 +1445,7 @@ var FOCI_DATA=[
    {t:'Safety alert: high risk for falls, wheeled walker at all times, supervise when she moves outside her room.',src:'overview',rows:['a5'],o:{k:'Safety alert',s:'Resident overview',dt:''}},
    {t:'Right partial hip replacement after a femoral neck fracture.',src:'dx',rows:['d1'],o:{k:'Diagnosis',s:'Diagnoses and procedures',dt:'23 Oct 2026',d:'2026-10-23'}}],
   checks:['The safety alert says wheeled walker, but the fall on 5 Nov 2026 was from a wheelchair. Confirm which mobility aid Peggy uses now.'],
+  checkMeta:[['warning','Mobility aid mismatch']],
   outcomes:[
    {t:'Peggy has no falls that cause injury before the next care plan review',tag:'new',note:'',on:true},
    {t:'Staff follow the supervision requirement every time Peggy moves outside her room',tag:'new',note:'',on:true}],
@@ -1452,6 +1462,7 @@ var FOCI_DATA=[
    {t:'Diagnosis: organic personality and behavioural disorder due to brain disease.',src:'dx',rows:['d3'],o:{k:'Diagnosis',s:'Diagnoses and procedures',dt:'28 Oct 2026',d:'2026-10-28'}},
    {t:'“Monitor mood state” is already an intervention under ADL function.',src:'plan',rows:['cp2'],o:{k:'Care plan',s:'Current care plan, ADL function',dt:'active since 3 Nov 2026'}}],
   checks:['The mood CAP comes from the interRAI assessment alone. Consider a current mood screen before adding a separate focus.'],
+  checkMeta:[['info','Single source']],
   outcomes:[{t:'Peggy takes part in activities that suit her preferences',tag:'new',note:'',on:true}],
   interventions:[
    {t:'Offer a choice of activities each day and record whether she takes part',who:'Activities staff',when:'Every day',tag:'new',on:true},
@@ -1465,6 +1476,7 @@ var FOCI_DATA=[
    {t:'Right partial hip replacement and dementia are recorded as active diagnoses.',src:'dx',rows:['d1','d3'],o:{k:'Diagnosis',s:'Diagnoses and procedures',dt:'23 Oct 2026 and 28 Oct 2026',d:'2026-10-28'}},
    {t:'This focus is already on the active care plan.',src:'plan',rows:['cp2'],o:{k:'Care plan',s:'Current care plan, ADL function',dt:'active since 3 Nov 2026'}}],
   checks:['The 15 Nov 2026 evaluation says “prevent further functional loss” was not achieved. Decide whether that outcome still fits.'],
+  checkMeta:[['warning','Outcome not achieved']],
   outcomes:[
    {t:'Identify methods of increasing activity, keeping in mind the person’s usual preferred level of involvement',tag:'existing',note:'Ongoing at last evaluation',on:true},
    {t:'Improve performance if functioning below capacity',tag:'existing',note:'Achieved, continue to monitor',on:true},
@@ -1724,18 +1736,21 @@ var ATTN=[
   ['info','info','Assessment in draft','A newer interRAI assessment is still in draft, so CAP triggers come from 8 Nov 2026.']
 ];
 function attnLeft(){return ATTN.filter(function(a,i){return !state.attn[i]}).length}
-/* each item is an Alert with a two-option RadioGroup; Review the draft care plan checks them like a form (error summary and field error) */
+/* each item is a Firefly Item card (StatusChip, title, description) with a two-option RadioGroup, options stacked as in Firefly.
+   Review the draft care plan checks them like a form (error summary and field error) */
+var ATTN_CHIP={warning:['bg-warning','Caution'],info:['bg-info','Information']};
 var ATTN_OPT=[['done','Checked now'],['later','Follow up later']];
 function attnHtml(){
   var n=ATTN.length-attnLeft(),err=state.attnErr;
   return '<fieldset class="result attn" aria-describedby="attn-hint'+(err?' attn-err':'')+'"><legend><h3 id="result-h">Worth your attention</h3></legend>'+
-    '<p class="fine" id="attn-hint">Choose what you did with each item. Items to follow up later are listed again at sign-off. '+n+' of '+ATTN.length+' answered.</p><ul class="finds">'+
+    '<p class="fine" id="attn-hint">Choose what you did with each item. Items to follow up later are listed again at sign-off. '+n+' of '+ATTN.length+' answered.</p><ul class="attn-items">'+
     ATTN.map(function(a,i){
-      return '<li><div class="alert alert-'+a[0]+'">'+icon(a[1],'alert-ic',20)+'<div class="alert-body"><p><strong>'+esc(a[2])+'.</strong> '+esc(a[3])+'</p>'+
-        '<fieldset class="attn-choice"><legend class="sr">What did you do with: '+esc(a[2])+'</legend>'+
+      var c=ATTN_CHIP[a[0]];
+      return '<li class="ff-item"><p class="ff-item-title">'+tagHtml(c[0],'',c[1])+'<strong>'+esc(a[2])+'</strong></p><p class="ff-item-desc">'+esc(a[3])+'</p>'+
+        '<fieldset class="ff-radios"><legend class="sr">What did you do with: '+esc(a[2])+'</legend>'+
         ATTN_OPT.map(function(o){var id='attn-'+i+'-'+o[0];
           return '<div class="form-check"><input class="form-check-input" type="radio" name="attn-'+i+'" id="'+id+'" value="'+o[0]+'" data-act="attn" data-i="'+i+'"'+(state.attn[i]===o[0]?' checked':'')+(err&&!state.attn[i]?' aria-invalid="true"':'')+'>'+
-            '<label class="form-check-label" for="'+id+'">'+o[1]+'</label></div>'}).join('')+'</fieldset></div></div></li>';
+            '<label class="form-check-label" for="'+id+'">'+o[1]+'</label></div>'}).join('')+'</fieldset></li>';
     }).join('')+'</ul>'+
     (err?'<p class="alert alert-error field-error" id="attn-err">'+icon('close-circle','alert-ic',20)+'<span class="alert-body"><strong><span class="sr">Error: </span>Choose what you did with each item</strong></span></p>':'')+
   '</fieldset>';
@@ -1819,6 +1834,11 @@ function decidedTag(f){
   return d.s==='accepted'?tagHtml('bg-success decided-tag','check','Accepted'):tagHtml('bg-neutral decided-tag','close-circle','Dismissed');
 }
 /* what must be answered before a focus area can be accepted: the confirmation, and each item to check */
+/* the chip and title of a point to check, shown like a Worth your attention card (points added later default to Information) */
+function checkHead(f,i){var m=(f.checkMeta&&f.checkMeta[i])||['info','Point to check'],c=ATTN_CHIP[m[0]];return {chip:tagHtml(c[0],'',c[1]),title:m[1]}}
+/* extra: a chip after the title, for example the neutral "Follow up later" on a dismissed focus area */
+function checkCard(f,i,c,inner,extra){var h=checkHead(f,i);
+  return '<li class="ff-item"><p class="ff-item-title">'+h.chip+'<strong>'+esc(h.title)+'</strong>'+(extra||'')+'</p><p class="ff-item-desc">'+esc(c)+'</p>'+(inner||'')+'</li>'}
 function checkMsg(f,i){return 'Choose Checked now or Follow up later for '+(f.checks.length>1?'item '+(i+1)+' to check':'the item to check')}
 function acceptErrs(f){
   var errs=[];
@@ -1866,21 +1886,23 @@ function viewDetail(f){
   var dismissedF=state.decisions[f.id]&&state.decisions[f.id].s==='dismissed';
   if(dismissedF){
     var open=f.checks.filter(function(c,i){return !(f.checked&&f.checked[i]==='done')});
-    if(open.length)msgs+='<section class="d-sec '+(conflictHtml?'mt-4':'mt-6')+'" aria-labelledby="check-h"><div class="alert alert-info">'+icon('info','alert-ic',20)+'<div class="alert-body"><h3 class="alert-title" id="check-h">Points to follow up</h3>'+
-      '<p>You dismissed this focus area. These points are listed at sign-off so they are not lost.</p><ul class="todo">'+open.map(function(c){return '<li>'+esc(c)+'</li>'}).join('')+'</ul></div></div></section>';
+    if(open.length)msgs+='<section class="d-sec checks '+(conflictHtml?'mt-4':'mt-6')+'" aria-labelledby="check-h"><h3 id="check-h">Points to follow up</h3>'+
+      '<p class="fine">You dismissed this focus area, but these points still apply to Peggy’s record. They are listed at sign-off so they are not lost.</p>'+
+      '<ul class="attn-items">'+f.checks.map(function(c,i){return f.checked&&f.checked[i]==='done'?'':checkCard(f,i,c,'',tagHtml('bg-neutral','','Follow up later'))}).join('')+'</ul></section>';
   }
   else if(f.checks.length){
     f.checked=f.checked||{};
     var nChk=f.checks.filter(function(c,i){return f.checked[i]==='done'}).length,allChk=nChk===f.checks.length,showErr=state.accErr===f.id;
-    msgs+='<section class="d-sec '+(conflictHtml?'mt-4':'mt-6')+'" aria-labelledby="check-h"><div class="alert '+(allChk?'alert-success':'alert-warning')+'">'+icon(allChk?'check':'warning','alert-ic',20)+'<div class="alert-body"><h3 class="alert-title" id="check-h">'+(allChk?'All points checked':'Points to check')+'</h3>'+
-      '<p class="fine">For each item, choose whether you checked it now or will follow it up later. Items to follow up later are listed again at sign-off.</p>'+
-      '<div class="check-group">'+f.checks.map(function(c,i){
+    /* same pattern as Worth your attention: one Firefly Item card per point, RadioGroup options stacked */
+    msgs+='<section class="d-sec checks '+(conflictHtml?'mt-4':'mt-6')+'" aria-labelledby="check-h"><h3 id="check-h">'+(allChk?'All points checked':'Points to check')+'</h3>'+
+      '<p class="fine">For each item, choose whether you checked it now or will follow it up later. Items to follow up later are listed again at sign-off. '+nChk+' of '+f.checks.length+' checked now.</p>'+
+      '<ul class="attn-items">'+f.checks.map(function(c,i){
         var base='chk-'+f.id+'-'+i,bad=showErr&&!f.checked[i];
-        return '<fieldset class="check-choice"'+(bad?' aria-describedby="'+base+'-err"':'')+'><legend>'+esc(c)+'</legend><div class="attn-choice">'+
+        return checkCard(f,i,c,'<fieldset class="check-choice ff-radios"'+(bad?' aria-describedby="'+base+'-err"':'')+'><legend class="sr">What did you do with: '+esc(checkHead(f,i).title)+'</legend><div class="ff-radios-opts">'+
           [['done','Checked now'],['later','Follow up later']].map(function(o){var cid=base+'-'+o[0];
             return '<div class="form-check"><input class="form-check-input" type="radio" name="'+base+'" id="'+cid+'" value="'+o[0]+'" data-act="check-item" data-id="'+f.id+'" data-i="'+i+'"'+(f.checked[i]===o[0]?' checked':'')+(bad?' aria-invalid="true"':'')+'><label class="form-check-label" for="'+cid+'">'+o[1]+'</label></div>'}).join('')+
-          '</div>'+(bad?'<p class="alert alert-error field-error" id="'+base+'-err'+'">'+icon('close-circle','alert-ic',20)+'<span class="alert-body"><strong><span class="sr">Error: </span>'+checkMsg(f,i)+'</strong></span></p>':'')+'</fieldset>';
-      }).join('')+'</div></div></div></section>';
+          '</div>'+(bad?'<p class="alert alert-error field-error" id="'+base+'-err'+'">'+icon('close-circle','alert-ic',20)+'<span class="alert-body"><strong><span class="sr">Error: </span>'+checkMsg(f,i)+'</strong></span></p>':'')+'</fieldset>');
+      }).join('')+'</ul></section>';
   }
   var evBody=(f.goals&&f.goals.length?'<p class="goal-note"><strong>Organizational goal:</strong> Beach Road Care Home aims to '+esc(f.goals[0].charAt(0).toLowerCase()+f.goals[0].slice(1))+'. This suggestion supports that goal.</p>':'')+'<ul class="trail">'+f.evidence.map(function(e){return '<li><p>'+esc(e.t)+'</p>'+provHtml(e.o)+'<button type="button" class="btn btn-ghost btn-source" data-act="source" data-src="'+e.src+'" data-rows="'+e.rows.join(',')+'" aria-haspopup="dialog">'+esc(SOURCES[e.src].name)+'</button></li>'}).join('')+'</ul>';
   var editRow='<p class="panel-hint">Use the Actions menu on a row to reword it or take it out of the plan.</p>';
@@ -2095,6 +2117,8 @@ function renderPlanList(){
     '<p class="fine mt-3">To prepare a new care plan from Peggy’s record, use <a href="#draft-care-plan" data-route="draft-care-plan">Draft care plan</a>.</p>';
 }
 
+/* changes to an active plan go through Momentum's care plan module (revisions, history), which the prototype does not build */
+var EDIT_BTN='<p class="sum-actions"><a class="btn btn-tertiary" href="#edit-care-plan" data-route="edit-care-plan">Edit care plan</a></p>';
 /* ---------- Active care plan: the active plan (4 Nov 2026 until sign-off, then the new one) ---------- */
 var SUMMARY='care-plan-summary';
 function renderSummary(){
@@ -2108,7 +2132,7 @@ function renderSummary(){
           '<div><dt>Next review</dt><dd>15 Nov 2026 <span class="tag bg-warning">Overdue</span></dd></div>'+
           '<div><dt>Last updated</dt><dd>17 Nov 2026 by Avinash, Raju</dd></div>'+
           '<div><dt>Incomplete plans</dt><dd>Two. See <a href="#care-plan-list" data-route="care-plan-list">Care plan list</a>.</dd></div>'+
-        '</dl></section>'+
+        '</dl>'+EDIT_BTN+'</section>'+
       '<section class="sum-sec" aria-labelledby="sum-fa-h"><h2 id="sum-fa-h">Focus areas ('+areas.length+')</h2>'+
         '<p class="fine">Outcomes and interventions for this plan are not part of the prototype.</p>'+
         areas.map(function(d,k){
@@ -2133,7 +2157,7 @@ function renderSummary(){
         '<div><dt>Replaces</dt><dd>The care plan active since 4 Nov 2026</dd></div>'+
         '<div><dt>Next review</dt><dd>Not set yet. It is listed under Still open.</dd></div>'+
         '<div><dt>Prepared with</dt><dd>Draft care plan assistant: '+totalRecords()+' records from '+ORDER.length+' sources'+(state.extra.length?', plus '+state.extra.length+' added by you':'')+'</dd></div>'+
-      '</dl></section>'+
+      '</dl>'+EDIT_BTN+'</section>'+
     '<section class="sum-sec" aria-labelledby="sum-fa-h"><h2 id="sum-fa-h">Focus areas ('+acc.length+')</h2>'+
       acc.map(function(f){
         var n=incl(f);
@@ -2203,7 +2227,7 @@ function openRowMenu(b,last){
     m.innerHTML='<div class="dd-group" role="none">'+crumbLinks.map(function(c){return '<a class="dd-item" role="menuitem" tabindex="-1" href="#'+c[1]+'" data-route="'+c[1]+'">'+esc(c[0])+'</a>'}).join('')+'</div>';
     m.setAttribute('aria-label','Earlier breadcrumb links');
   }else{
-  if(b.dataset.plan){a=' data-plan="'+b.dataset.plan+'" data-active="'+b.dataset.active+'"';items=[['plan-details','View details'],['plan-view','View care plan']];lbl='Actions for care plan'}
+  if(b.dataset.plan){a=' data-plan="'+b.dataset.plan+'" data-active="'+b.dataset.active+'"';items=[['plan-view','View care plan']];lbl='Actions for care plan'}
   else{var it=soItem(b);a=' data-id="'+it.f.id+'" data-kind="'+it.kind+'" data-i="'+it.i+'"';
     items=it.x.on?[['row-edit','Edit'],['row-toggle','Remove']]:[['row-toggle','Restore']];lbl='Actions for '+KNAME[it.kind]}
   m.innerHTML='<div class="dd-group" role="none">'+items.map(function(x){return '<button type="button" class="dd-item" role="menuitem" tabindex="-1" data-act="'+x[0]+'"'+a+'>'+x[1]+'</button>'}).join('')+'</div>';
@@ -2375,7 +2399,6 @@ document.addEventListener('click',function(e){
       var it=soItem(b);closeRowMenu(false);it.x.on=!it.x.on;
       refreshItems(it.f,rowSel(it.f,it.kind,it.i));live(it.x.on?'Restored':'Removed');break;}
     case 'sheet-save':saveSheet();break;
-    case 'plan-details':closeRowMenu(false);location.hash='care-plan-details';break;
     case 'plan-view':closeRowMenu(false);location.hash=b.dataset.active==='true'?'care-plan-summary':'care-plan-details';break;
     case 'plan-sort':{
       var col=b.dataset.col,ps=state.planSort;
@@ -2502,7 +2525,7 @@ var NAV_FOOT=[['support','Support','lifering'],['language','Language','globe']];
 var ROUTES={};
 NAV_GROUPS.forEach(function(g){g.items.forEach(function(i){if(i.children){i.children.forEach(function(c){ROUTES[c[0]]=c[1]})}else ROUTES[i[0]]=i[1]})});
 NAV_FOOT.forEach(function(i){ROUTES[i[0]]=i[1]});
-ROUTES['care-plan-details']='Care plan details';ROUTES.account='Account';ROUTES.privacy='Privacy';ROUTES['cookie-policy']='Cookie policy';ROUTES.accessibility='Accessibility';
+ROUTES['care-plan-details']='Care plan details';ROUTES['edit-care-plan']='Edit care plan';ROUTES.account='Account';ROUTES.privacy='Privacy';ROUTES['cookie-policy']='Cookie policy';ROUTES.accessibility='Accessibility';
 
 function navLink(r,label,ic){return '<li><a class="nav-link" href="#'+r+'" data-route="'+r+'">'+icon(ic,'',20)+'<span>'+esc(label)+'</span></a></li>'}
 function navItem(i,cur){
@@ -2522,7 +2545,7 @@ function renderNav(){
 }
 var PARENT_OF={};
 NAV_GROUPS.forEach(function(g){g.items.forEach(function(i){if(i.children)i.children.forEach(function(c){PARENT_OF[c[0]]={label:i.label,to:i.children[0][0]}})})});
-PARENT_OF['care-plan-details']=PARENT_OF['care-plan-list'];
+PARENT_OF['care-plan-details']=PARENT_OF['care-plan-list'];PARENT_OF['edit-care-plan']=PARENT_OF['care-plan-list'];
 /* pages that are not about one resident; every other page works on Peggy's record */
 var NOT_RESIDENT={home:1,'resident-search':1,support:1,language:1,account:1,privacy:1,'cookie-policy':1,accessibility:1};
 var RESIDENT_CRUMB='Thompson, Margaret';
