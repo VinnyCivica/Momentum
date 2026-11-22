@@ -1212,14 +1212,21 @@ a.dd-item{text-decoration:none}
   padding:var(--ff-dimension-d-3) var(--ff-dimension-d-5);border-radius:var(--ff-radius-container);
   background:var(--ff-color-core-primary-inverse);color:var(--ff-color-core-primary-inverse-foreground);
   font-size:var(--ff-font-size-body-base);line-height:var(--ff-font-line-height-body-base);text-align:center;box-shadow:var(--ff-shadow-xl)}
-.demo-bar{position:fixed;z-index:220;top:var(--ff-dimension-d-2);right:var(--ff-dimension-d-2);display:flex;flex-wrap:wrap;align-items:center;gap:var(--ff-dimension-d-2);
-  padding:var(--ff-dimension-d-2);border-radius:var(--ff-radius-container);background:var(--ff-color-surface-primary-background);box-shadow:var(--ff-shadow-xl);font-size:var(--ff-font-size-body-sm)}
-.demo-btn{min-height:var(--app-target);padding:0 var(--ff-dimension-d-3);border:var(--ff-border-width-w-100) solid var(--ff-component-button-primary-border);border-radius:var(--ff-radius-button);
-  background:var(--ff-component-button-primary-background);color:var(--ff-component-button-primary-foreground);font:inherit;font-weight:var(--app-weight-medium);cursor:pointer}
-.demo-pause,.demo-stop{background:var(--ff-color-surface-primary-background);color:var(--ff-color-core-primary)}
-.demo-voice select{max-width:14rem;margin-left:var(--ff-dimension-d-1);font:inherit}
-.demo-time{min-width:3em;font-variant-numeric:tabular-nums}
+/* The controls sit in the header row, left of Search (placed by demo.js). z-index 30: above the header (20),
+   below the side menu (40), menus (45), backdrops (50, 60), side panels and dialogs (70), so panels cover it. */
+.demo-bar{position:fixed;z-index:30;top:var(--ff-dimension-d-3);right:var(--ff-dimension-d-2);display:flex;flex-wrap:nowrap;align-items:center;gap:var(--ff-dimension-d-1_5);
+  padding:var(--ff-dimension-d-1);border:var(--ff-border-width-w-100) solid var(--ff-color-border-decorative);border-radius:var(--ff-radius-button);
+  background:var(--ff-color-surface-primary-background);font-size:var(--ff-font-size-body-xs);line-height:var(--ff-font-line-height-body-xs);white-space:nowrap}
+.demo-btn{height:var(--ff-dimension-d-8);padding:0 var(--ff-dimension-d-3);border:var(--ff-border-width-w-100) solid var(--ff-component-button-primary-border);
+  border-radius:var(--ff-radius-input);background:var(--ff-component-button-primary-background);color:var(--ff-component-button-primary-foreground);
+  font:inherit;font-weight:var(--app-weight-medium);cursor:pointer}
+.demo-skip,.demo-pause,.demo-stop{background:var(--ff-color-surface-primary-background);color:var(--ff-color-core-primary)}
+.demo-field{display:flex;align-items:center;gap:var(--ff-dimension-d-1);color:var(--ff-color-surface-primary-foreground-subtle)}
+.demo-field select{height:var(--ff-dimension-d-8);max-width:11rem;padding:0 var(--ff-dimension-d-1);font:inherit;color:var(--ff-color-surface-primary-foreground);
+  border:var(--ff-border-width-w-100) solid var(--ff-color-border-decorative);border-radius:var(--ff-radius-input);background:var(--ff-color-surface-primary-background)}
+.demo-time{min-width:3em;padding:0 var(--ff-dimension-d-1);font-variant-numeric:tabular-nums;color:var(--ff-color-surface-primary-foreground-subtle)}
 .demo-press{outline:3px solid var(--ff-color-core-primary)!important;outline-offset:2px}
+body>header #crumbs{margin-right:var(--demo-bar-room,0px)}
 </style>
 </head>
 <body>
@@ -2723,6 +2730,57 @@ route(false);
 
 </script>
 <script>
+/* Narration for the v6 narrated demo: what to highlight (at), what to say, what to click.
+   sec marks where each section of the script starts (used by "Start from"). Played by demo/demo.js. */
+window.DEMO_STEPS = [
+  { sec: 'Opening', say: ['This is a presentation prototype of the Draft care plan assistant in Civica Momentum.',
+          'It is built with the latest Firefly design system, and uses test data, not a real resident.'] },
+  { at: '#nav-toggle', say: ['First, I will close the side menu to give us more space.'], click: '#nav-toggle' },
+  { sec: 'Safety alerts', at: '.resident', say: ['At the top are Peggy’s safety alerts.',
+          'They stay on every page about her, so critical risks, like her penicillin allergy, are always in view.'] },
+  { at: '.alert-grid .link-btn', click: '.alert-grid .link-btn', afterAt: '#srcmodal', after: 'Selecting an alert opens the record behind it.', then: '#srcmodal-x' },
+  { sec: 'Summarize', at: '[data-act="start"]', say: ['Now I will ask the assistant to summarize her record.'], click: '[data-act="start"]', afterAt: '#view',
+    after: 'It reads twelve parts of the record, from assessments and progress notes to falls, medications and the current care plan.',
+    until: '.attn-items' },
+  { at: '#view-h', say: ['In a few seconds it has read a hundred and one records and drafted five focus areas.',
+          'Without the assistant, a nurse would open each of the twelve parts on its own screen and piece the plan together themselves.'] },
+  { sec: 'Worth your attention', at: '.attn', say: ['Worth your attention lists what a nurse could miss, like an overdue review, or three falls with no falls focus.'] },
+  { at: '.attn-items', say: ['Every finding must be acknowledged, checked now or follow up later, and each answer goes into the audit trail.'],
+    clicks: ['#attn-0-done', '#attn-1-done', '#attn-2-later', '#attn-3-done'] },
+  { at: '[data-act="add-source"]', click: '[data-act="add-source"]', afterAt: '#fsheet',
+    after: 'Missing information can be added as a source, in a side panel. For example, a hospital discharge letter that is not in Momentum yet.',
+    then: '[data-act="cancel-source"]' },
+  { sec: 'Review', at: '[data-act="to-review"]', say: ['Now let’s review the draft care plan.'], click: '[data-act="to-review"]' },
+  { at: '.side', say: ['On the left are five focus areas: new suggestions, and areas from the current plan.'] },
+  { at: '#detail', say: ['Falls prevention shows its sources, the organizational goal behind it, and a point to check: the alert says walker, but her last fall was from a wheelchair.'] },
+  { at: '.nav-tabs', say: ['The nurse is expected to read both tabs before deciding.'] },
+  { at: '#panel-why', say: ['The ‘Why the assistant suggests this’ tab lists the evidence from her record, so the nurse can check the reasoning instead of taking it on trust.',
+          'Each piece of evidence links to the record it came from.'] },
+  { at: '#panel-why .btn-source', click: '#panel-why .btn-source', afterAt: '#srcmodal', after: 'Here is the record behind this source.', then: '#srcmodal-x' },
+  { at: '#tab-items', click: '#tab-items', afterAt: '#panel-items', after: 'The second tab holds the outcomes and interventions that will go into the plan.' },
+  { at: '#panel-items [data-act="row-menu"]', click: '#panel-items [data-act="row-menu"]' },
+  { at: '[data-act="row-edit"]', click: '[data-act="row-edit"]', afterAt: '#sheet', after: 'Any outcome or intervention can be edited in a side panel.', then: '#sheet [data-act="sheet-cancel"]' },
+  { at: 'input[id^="ack-"]', say: ['Every selection has to be acknowledged with a tick box, which is important for the audit trail.'],
+    clicks: ['input[id^="ack-"]', '.checks input[value="done"]', '[data-act="accept"]'] },
+  { at: '[aria-label="Next focus area"]', say: ['A suggestion can also be dismissed, with a reason.'],
+    clicks: ['[aria-label="Next focus area"]', '[data-act="dismiss"]', '#rsn-0', '[data-act="confirm-dismiss"]'] },
+  { at: '.side', say: ['The other areas are reviewed the same way, each one ticked and accepted.'], accept: 3 },
+  { at: '[data-act="add-focus"]', click: '[data-act="add-focus"]', afterAt: '#fsheet',
+    after: 'Nurses can also create their own focus area. For example, pain management after her hip replacement.',
+    then: '[data-act="cancel-focus"]' },
+  { sec: 'Sign off', at: '[data-act="to-signoff"]', click: '[data-act="to-signoff"]' },
+  { at: '.signoff', say: ['Sign off shows exactly what will change, and what is still open.',
+          'Nothing changes in the active plan until a clinician signs off.'] },
+  { at: '.so-card', say: ['The nurse ticks the declaration and takes clinical responsibility.'], clicks: ['#attest', '#save-btn'] },
+  { sec: 'Result', at: '.audit', say: ['Every step is in the audit trail, including who signed off.'] },
+  { at: '#view a[href="#care-plan-summary"]', click: '#view a[href="#care-plan-summary"]', afterAt: '#sumview .sum-card', after: 'And here is her new active care plan.' },
+  { at: '#nav-toggle', click: '#nav-toggle', afterAt: '#main-nav .nav-has-sub.open', after: 'The side menu works on her record. The care plan menu is open.' },
+  { at: '#main-nav a[data-route="care-plan-list"]', click: '#main-nav a[data-route="care-plan-list"]', afterAt: '#sumview .dt-scroller',
+    after: 'The care plan list shows all of her care plans: the new active plan, the plan it replaced, now archived, and two incomplete plans, with their review dates.' },
+  { say: ['The assistant does the reading in seconds. Every suggestion is traceable, every decision is the nurse’s, and the audit trail is complete.',
+          'That’s time given back to resident care.'] }
+];
+
 /* Narrated auto-play demo for the v6.0 prototype (about 2.5 minutes).
    Speaks each line with the browser's built-in voice (Web Speech API), highlights what it talks about,
    and clicks through the prototype. Captions show every line, so it also works with the sound off.
@@ -2733,67 +2791,48 @@ route(false);
   var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
   /* ?silent: captions only, timed by word count (for rehearsing without sound) */
   var synth = /[?&]silent/.test(location.search) ? null : window.speechSynthesis, voice = null, stopped = false, paused = false, t0 = 0;
+  /* quick: replaying earlier steps silently for "Start from"; skipStep: the Skip button was pressed for this step */
+  var quick = false, skipStep = false, skipNow = null;
 
-  /* ---------- the narration: [what to highlight, what to say, what to do] ---------- */
-  var STEPS = [
-    { say: ['This is a presentation prototype of the Draft care plan assistant in Civica Momentum.',
-            'It is built with the latest Firefly design system, and uses test data, not a real resident.'] },
-    { at: '#nav-toggle', say: ['First, I will close the side menu to give us more space.'], click: '#nav-toggle' },
-    { at: '.resident', say: ['At the top are Peggy’s safety alerts.',
-            'They stay on every page about her, so critical risks, like her penicillin allergy, are always in view.'] },
-    { at: '.alert-grid .link-btn', click: '.alert-grid .link-btn', afterAt: '#srcmodal', after: 'Selecting an alert opens the record behind it.', then: '#srcmodal-x' },
-    { at: '[data-act="start"]', say: ['Now I will ask the assistant to summarize her record.'], click: '[data-act="start"]', afterAt: '#view',
-      after: 'It reads twelve parts of the record, from assessments and progress notes to falls, medications and the current care plan.',
-      until: '.attn-items' },
-    { at: '#view-h', say: ['In a few seconds it has read a hundred and one records and drafted five focus areas.',
-            'Without the assistant, a nurse would open each of the twelve parts on its own screen and piece the plan together themselves.'] },
-    { at: '.attn', say: ['Worth your attention lists what a nurse could miss, like an overdue review, or three falls with no falls focus.'] },
-    { at: '.attn-items', say: ['Every finding must be acknowledged, checked now or follow up later, and each answer goes into the audit trail.'],
-      clicks: ['#attn-0-done', '#attn-1-done', '#attn-2-later', '#attn-3-done'] },
-    { at: '[data-act="add-source"]', click: '[data-act="add-source"]', afterAt: '#fsheet',
-      after: 'Missing information can be added as a source, in a side panel. For example, a hospital discharge letter that is not in Momentum yet.',
-      then: '[data-act="cancel-source"]' },
-    { at: '[data-act="to-review"]', say: ['Now let’s review the draft care plan.'], click: '[data-act="to-review"]' },
-    { at: '.side', say: ['On the left are five focus areas: new suggestions, and areas from the current plan.'] },
-    { at: '#detail', say: ['Falls prevention shows its sources, the organizational goal behind it, and a point to check: the alert says walker, but her last fall was from a wheelchair.'] },
-    { at: '.nav-tabs', say: ['The nurse is expected to read both tabs before deciding.'] },
-    { at: '#panel-why', say: ['The ‘Why the assistant suggests this’ tab lists the evidence from her record, so the nurse can check the reasoning instead of taking it on trust.',
-            'Each piece of evidence links to the record it came from.'] },
-    { at: '#panel-why .btn-source', click: '#panel-why .btn-source', afterAt: '#srcmodal', after: 'Here is the record behind this source.', then: '#srcmodal-x' },
-    { at: '#tab-items', click: '#tab-items', afterAt: '#panel-items', after: 'The second tab holds the outcomes and interventions that will go into the plan.' },
-    { at: '#panel-items [data-act="row-menu"]', click: '#panel-items [data-act="row-menu"]' },
-    { at: '[data-act="row-edit"]', click: '[data-act="row-edit"]', afterAt: '#sheet', after: 'Any outcome or intervention can be edited in a side panel.', then: '#sheet [data-act="sheet-cancel"]' },
-    { at: 'input[id^="ack-"]', say: ['Every selection has to be acknowledged with a tick box, which is important for the audit trail.'],
-      clicks: ['input[id^="ack-"]', '.checks input[value="done"]', '[data-act="accept"]'] },
-    { at: '[aria-label="Next focus area"]', say: ['A suggestion can also be dismissed, with a reason.'],
-      clicks: ['[aria-label="Next focus area"]', '[data-act="dismiss"]', '#rsn-0', '[data-act="confirm-dismiss"]'] },
-    { at: '.side', say: ['The other areas are reviewed the same way, each one ticked and accepted.'], accept: 3 },
-    { at: '[data-act="add-focus"]', click: '[data-act="add-focus"]', afterAt: '#fsheet',
-      after: 'Nurses can also create their own focus area. For example, pain management after her hip replacement.',
-      then: '[data-act="cancel-focus"]' },
-    { at: '[data-act="to-signoff"]', click: '[data-act="to-signoff"]' },
-    { at: '.signoff', say: ['Sign off shows exactly what will change, and what is still open.',
-            'Nothing changes in the active plan until a clinician signs off.'] },
-    { at: '.so-card', say: ['The nurse ticks the declaration and takes clinical responsibility.'], clicks: ['#attest', '#save-btn'] },
-    { at: '.audit', say: ['Every step is in the audit trail, including who signed off.'] },
-    { at: '#view a[href="#care-plan-summary"]', click: '#view a[href="#care-plan-summary"]', afterAt: '#sumview .sum-card', after: 'And here is her new active care plan.' },
-    { at: '#nav-toggle', click: '#nav-toggle', afterAt: '#main-nav .nav-has-sub.open', after: 'The side menu works on her record. The care plan menu is open.' },
-    { at: '#main-nav a[data-route="care-plan-list"]', click: '#main-nav a[data-route="care-plan-list"]', afterAt: '#sumview .dt-scroller',
-      after: 'The care plan list shows all of her care plans: the new active plan, the plan it replaced, now archived, and two incomplete plans, with their review dates.' },
-    { say: ['The assistant does the reading in seconds. Every suggestion is traceable, every decision is the nurse’s, and the audit trail is complete.',
-            'That’s time given back to resident care.'] }
-  ];
+  var STEPS = window.DEMO_STEPS || [];
+
 
   /* ---------- overlay: highlight ring, captions, controls ---------- */
   var ring = document.createElement('div'); ring.className = 'demo-ring'; ring.hidden = true;
   var cap = document.createElement('div'); cap.className = 'demo-cap'; cap.hidden = true; cap.setAttribute('aria-live', 'polite');
   var bar = document.createElement('div'); bar.className = 'demo-bar';
-  bar.innerHTML = '<button type="button" class="demo-btn demo-play">Play narrated demo</button>' +
-    '<label class="demo-voice">Voice <select></select></label><button type="button" class="demo-btn demo-pause" hidden>Pause</button>' +
+  bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Narrated demo controls');
+  bar.innerHTML = '<label class="demo-field">Start from <select class="demo-sec"></select></label>' +
+    '<label class="demo-field demo-voice">Voice <select class="demo-vsel"></select></label>' +
+    '<button type="button" class="demo-btn demo-play">Play</button>' +
+    '<button type="button" class="demo-btn demo-skip" hidden>Skip \u203a</button>' +
+    '<button type="button" class="demo-btn demo-pause" hidden>Pause</button>' +
     '<button type="button" class="demo-btn demo-stop" hidden>Stop</button><span class="demo-time" hidden></span>';
   document.body.append(ring, cap, bar);
-  var sel = bar.querySelector('select'), playB = bar.querySelector('.demo-play'), pauseB = bar.querySelector('.demo-pause'),
+  var sel = bar.querySelector('.demo-vsel'), secSel = bar.querySelector('.demo-sec'), playB = bar.querySelector('.demo-play'),
+      skipB = bar.querySelector('.demo-skip'), pauseB = bar.querySelector('.demo-pause'),
       stopB = bar.querySelector('.demo-stop'), timeEl = bar.querySelector('.demo-time');
+  secSel.innerHTML = STEPS.map(function (st, i) { return st.sec ? '<option value="' + i + '">' + st.sec + '</option>' : ''; }).join('');
+
+  /* the bar sits in the header, just left of the Search button (or under the header when there is no room) */
+  function placeBar() {
+    var sb = document.getElementById('search-btn'), hd = document.querySelector('body > header');
+    if (!sb || !hd) return;
+    var r = sb.getBoundingClientRect(), h = hd.getBoundingClientRect(), w = bar.offsetWidth, cw = document.documentElement.clientWidth;
+    if (r.left - w - 12 > h.left + 120) {
+      /* the breadcrumb leaves room for the bar, and shortens its labels if needed */
+      document.documentElement.style.setProperty('--demo-bar-room', (w + 12) + 'px');
+      bar.style.right = (cw - r.left + 12) + 'px';
+      bar.style.top = Math.max(0, r.top + r.height / 2 - bar.offsetHeight / 2) + 'px';
+    } else {
+      document.documentElement.style.setProperty('--demo-bar-room', '0px');
+      bar.style.right = '8px'; bar.style.top = (Math.max(0, h.bottom) + 8) + 'px';
+    }
+  }
+  placeBar();
+  window.addEventListener('resize', placeBar);
+  window.addEventListener('scroll', placeBar, true);
+  new MutationObserver(placeBar).observe(bar, { attributes: true, subtree: true, childList: true });
 
   function loadVoices() {
     if (!synth) { sel.parentNode.hidden = true; return; }
@@ -2803,7 +2842,7 @@ route(false);
     sel.innerHTML = vs.map(function (v, i) { return '<option value="' + i + '">' + v.name + '</option>'; }).join('');
     sel._voices = vs; voice = vs[0] || null;
   }
-  if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; }
+  if (synth) { loadVoices(); synth.onvoiceschanged = loadVoices; } else sel.parentNode.hidden = true;
   sel.addEventListener('change', function () { voice = sel._voices[sel.value]; });
 
   function place(el) {
@@ -2818,21 +2857,33 @@ route(false);
   window.addEventListener('resize', function () { if (focusEl) place(focusEl); });
 
   async function show(sel) {
+    if (quick) { focusEl = null; ring.hidden = true; return; }
     var el = sel ? $(sel) : null; focusEl = el;
     if (el) { var r = el.getBoundingClientRect(); if (r.top < 70 || r.bottom > innerHeight - 110) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); await wait(500); } }
     place(el);
   }
   async function gate() { while (paused && !stopped) await wait(200); if (stopped) throw new Error('stopped'); }
 
+  /* Pronunciation fixes, for the voice only (captions keep the real spelling).
+     Chosen by ear with docs/voice-test.htm. Each applies only to the voices it was tested with. */
+  var SAY_AS = [
+    { voice: /Sonia/i, word: /\bclinician(s?)\b/gi, as: 'clinishan$1' }
+  ];
+  function spoken(text) {
+    SAY_AS.forEach(function (r) { if (voice && r.voice.test(voice.name)) text = text.replace(r.word, r.as); });
+    return text;
+  }
   /* one sentence at a time (long utterances get cut off in some browsers); a timer moves on if the voice never reports the end */
   function speak(text) {
+    if (quick || skipStep) return Promise.resolve();
     cap.hidden = false; cap.textContent = text;
     var est = Math.max(1500, text.split(/\s+/).length / 2.75 * 1000);
     window.demoSpoken = (window.demoSpoken || 0) + est; /* estimated speaking time, for checking the length */
     if (/[?&]fast/.test(location.search)) return wait(30);
-    if (!synth || !voice) return wait(est);
+    if (!synth || !voice) return new Promise(function (res) { var t = setTimeout(res, est); skipNow = function () { clearTimeout(t); skipNow = null; res(); }; });
     return new Promise(function (res) {
-      var u = new SpeechSynthesisUtterance(text), done = false, fin = function () { if (!done) { done = true; res(); } };
+      var u = new SpeechSynthesisUtterance(spoken(text)), done = false, fin = function () { if (!done) { done = true; skipNow = null; res(); } };
+      skipNow = fin;
       u.voice = voice; u.lang = voice.lang; u.rate = 1.05;
       u.onend = fin; u.onerror = fin;
       synth.speak(u);
@@ -2843,6 +2894,7 @@ route(false);
   async function click(s) {
     await gate(); await show(s); var el = $(s);
     if (!el) { console.warn('demo: not found', s); return; }
+    if (quick) { el.click(); await wait(60); return; }
     el.classList.add('demo-press'); await wait(250); el.classList.remove('demo-press');
     el.click(); await wait(300);
   }
@@ -2863,13 +2915,21 @@ route(false);
     }
   }
 
-  async function run() {
-    stopped = false; paused = false; t0 = Date.now();
-    playB.hidden = true; sel.parentNode.hidden = true; pauseB.hidden = false; stopB.hidden = false; timeEl.hidden = false;
-    var tick = setInterval(function () { var s = Math.round((Date.now() - t0) / 1000); timeEl.textContent = Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }, 500);
+  /* from: the step to start speaking at; earlier steps are replayed quickly and silently so the page is in the right state */
+  async function run(from) {
+    from = from || 0;
+    stopped = false; paused = false; quick = from > 0; t0 = Date.now();
+    playB.hidden = true; secSel.parentNode.hidden = true; sel.parentNode.hidden = true;
+    skipB.hidden = false; pauseB.hidden = false; stopB.hidden = false; timeEl.hidden = false;
+    var tick = setInterval(function () {
+      if (quick) { timeEl.textContent = 'Fast-forwarding\u2026'; return; }
+      var s = Math.round((Date.now() - t0) / 1000); timeEl.textContent = Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+    }, 300);
     try {
       for (var i = 0; i < STEPS.length; i++) {
-        var st = STEPS[i]; await gate();
+        var st = STEPS[i];
+        if (quick && i >= from) { quick = false; t0 = Date.now(); }
+        skipStep = false; await gate();
         await show(st.at);
         /* steps with several clicks talk while they click */
         var many = st.clicks || st.accept;
@@ -2886,8 +2946,8 @@ route(false);
       }
       window.demoDuration = Math.round((Date.now() - t0) / 1000);
     } catch (e) { if (e.message !== 'stopped') console.error(e); }
-    clearInterval(tick); ring.hidden = true; focusEl = null; cap.hidden = true;
-    pauseB.hidden = true; stopB.hidden = true; playB.hidden = false; playB.textContent = 'Play again (reloads the page)';
+    clearInterval(tick); ring.hidden = true; focusEl = null; cap.hidden = true; quick = false;
+    skipB.hidden = true; pauseB.hidden = true; stopB.hidden = true; playB.hidden = false; playB.textContent = 'Play again (reloads)';
     playB.onclick = function () { location.reload(); };
   }
 
@@ -2904,7 +2964,12 @@ route(false);
       playB.textContent = 'Resetting…'; location.reload(); return;
     }
     window.scrollTo(0, 0);
-    run();
+    run(parseInt(secSel.value, 10) || 0);
+  };
+  skipB.onclick = function () {
+    skipStep = true; cap.hidden = true;
+    if (synth) synth.cancel();
+    if (skipNow) skipNow();
   };
   pauseB.onclick = function () {
     paused = !paused; pauseB.textContent = paused ? 'Resume' : 'Pause';
