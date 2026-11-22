@@ -2358,7 +2358,7 @@ document.addEventListener('click',function(e){
   if(nl){
     e.preventDefault();
     var rt=nl.dataset.route;
-    if(rt===slugFromHash())route(true);else location.hash=rt;
+    if(rt===slugFromHash())route(true);else go(rt);
     return;
   }
   var b=e.target.closest('[data-act]');
@@ -2399,7 +2399,7 @@ document.addEventListener('click',function(e){
       var it=soItem(b);closeRowMenu(false);it.x.on=!it.x.on;
       refreshItems(it.f,rowSel(it.f,it.kind,it.i));live(it.x.on?'Restored':'Removed');break;}
     case 'sheet-save':saveSheet();break;
-    case 'plan-view':closeRowMenu(false);location.hash=b.dataset.active==='true'?'care-plan-summary':'care-plan-details';break;
+    case 'plan-view':closeRowMenu(false);go(b.dataset.active==='true'?'care-plan-summary':'care-plan-details');break;
     case 'plan-sort':{
       var col=b.dataset.col,ps=state.planSort;
       /* Firefly DataTable: ascending, then descending, then unsorted */
@@ -2564,7 +2564,12 @@ function renderCrumbs(slug){
     return '<li'+(more&&i<t.length-1?' class="crumb-full"':'')+'>'+(c[1]?'<a href="#'+c[1]+'" data-route="'+c[1]+'">'+esc(c[0])+'</a>':(c[2]?'<span>'+esc(c[0])+'</span>':'<span aria-current="page">'+esc(c[0])+'</span>'))+'</li>';
   }).join('');
 }
-function slugFromHash(){var h=location.hash.replace('#','');return ROUTES[h]?h:HOME}
+/* Some previewers (for example a file viewer) show the page from a data: address, where changing the #hash is blocked.
+   There the current page is kept in memory instead, so navigation still works. */
+var canHash=location.protocol!=='data:',memSlug=null;
+function go(slug){if(canHash){location.hash=slug;return}memSlug=slug;route(true)}
+function slugFromHash(){var h=(!canHash&&memSlug)||location.hash.replace('#','');return ROUTES[h]?h:HOME}
+window.momentumGo=go;window.momentumPage=function(){return slugFromHash()};
 function updateNav(slug){
   [].forEach.call(document.querySelectorAll('#main-nav a[data-route]'),function(a){
     if(a.dataset.route===slug)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
