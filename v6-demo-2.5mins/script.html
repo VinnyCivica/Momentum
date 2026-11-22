@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo script v6b – Draft care plan assistant</title>
+<style>
+:root{--ink:#1d2327;--muted:#555d63;--line:#d1d2d3;--say:#eef0f1;--accent:#006b72}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.55 Roboto,Arial,Helvetica,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;line-height:1.25;margin:0 0 16px}
+h2{font-size:21px;line-height:1.3;margin:36px 0 12px;padding-top:12px;border-top:1px solid var(--line)}
+h1+p,hr+h2{border-top:0}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+p,ul,ol{margin:0 0 12px}
+ul,ol{padding-left:24px}
+li{margin:4px 0}
+code{font:14px/1.4 Consolas,Menlo,monospace;background:#f4f5f6;padding:1px 4px;border-radius:4px}
+/* every spoken line: light grey box */
+.say{background:var(--say);border-radius:8px}
+blockquote.say{margin:4px 0 16px;padding:10px 14px;font-size:17px}
+span.say{padding:2px 8px;-webkit-box-decoration-break:clone;box-decoration-break:clone;line-height:1.9}
+table{border-collapse:collapse;margin:8px 0 16px;width:100%}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600}
+@media print{body{font-size:12pt}main{padding:0}h2{break-after:avoid}blockquote.say,table{break-inside:avoid}
+  .say{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<main>
+<h1>Demo script v6b: Draft care plan assistant (about 2.5 minutes)</h1>
+<p>The short version of the v6 script, with six cuts and tighter wording. For a Teams screen share to a panel. The point to land: <strong>the assistant does the reading in seconds, every suggestion shows where it came from, every decision is acknowledged for the audit trail, and nothing is written until a clinician signs off.</strong></p>
+<ul><li><strong>Say</strong> = what you say. <strong>Press</strong> = what you click. Do the clicks while you talk.</li><li>The narrated version, <code>civica-care-plan-assistant-v6b-demo.htm</code>, speaks these same lines and does these same clicks.</li><li><strong>Length:</strong> about 330 words. At a normal pace (about 150 words a minute) plus the clicks, it runs about <strong>2 min 35 s</strong>; the narrated version is about 2 min 25 s. If you need to save a few more seconds, speak the “Review” section a little faster.</li><li><strong>Cut from v6:</strong> dismissing Mood and engagement; the Add a focus area panel (now one sentence); the source record from the “Why the assistant suggests this” tab; the Edit side panel (now one sentence); the Worth your attention description; the side menu and Care plan list ending.</li></ul>
+<hr>
+<h2>Before you share (not timed)</h2>
+<ol><li>Open <code>civica-care-plan-assistant-v6.0.htm</code> in Edge or Chrome. Close other tabs and turn on Do not disturb.</li><li>Leave the browser zoom at <strong>100%</strong>, then check readability. Share the window in a Teams test call (or join from a second device) and make sure the chips and the “Worth your attention” text are easy to read. Only if they aren’t, zoom to 110–125%. Zooming can make the side menu open over the page instead of beside it, so rehearse at the zoom you’ll use.</li><li>Press <strong>F5</strong> to reset, then click <strong>Draft care plan</strong> in the sidebar (under <strong>Care plan</strong>). You should see <strong>Draft care plan: Summarize</strong>.</li><li>In Teams, choose <strong>Share &gt; Window</strong> and pick the browser window.</li></ol>
+<hr>
+<h2>1 · Opening (0:00 – 0:15)</h2>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“This is a presentation prototype of the Draft care plan assistant in Civica Momentum, built with the latest Firefly design system and test data.”</blockquote>
+<p><strong>Press:</strong> the <strong>side menu button</strong> (top left, next to the breadcrumb).</p>
+<p><strong>Say:</strong> <span class="say">“I’ll close the side menu for more space.”</span></p>
+<h2>2 · The resident and safety alerts (0:15 – 0:30)</h2>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“At the top are Peggy’s safety alerts, kept on every page so critical risks, like her penicillin allergy, are always in view.”</blockquote>
+<p><strong>Press:</strong> <strong>Penicillin allergy</strong> (the first alert). A dialog opens.</p>
+<p><strong>Say:</strong> <span class="say">“Selecting an alert opens the record behind it.”</span> <strong>Press:</strong> <strong>Close</strong> (the X).</p>
+<h2>3 · Summarize (0:30 – 0:55)</h2>
+<p><strong>Say:</strong> <span class="say">“Now I’ll ask the assistant to summarize her record.”</span></p>
+<p><strong>Press:</strong> <strong>Summarize record</strong>. It takes about 4 seconds.</p>
+<p><strong>Say (while it runs):</strong> <span class="say">“It reads twelve parts of her record, from assessments to medications.”</span></p>
+<p><strong>When it finishes, say:</strong></p>
+<blockquote class="say">“In a few seconds it has read 101 records and drafted five focus areas. Without the assistant, a nurse would open each of the twelve parts on its own screen and piece the plan together themselves.”</blockquote>
+<h2>4 · Worth your attention and Add a source (0:55 – 1:15)</h2>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“Every finding must be acknowledged, checked now or follow up later, for the audit trail.”</blockquote>
+<p><strong>Press</strong>, top to bottom in Worth your attention: <strong>Checked now</strong>, <strong>Checked now</strong>, <strong>Follow up later</strong> (Mood signals), <strong>Checked now</strong>.</p>
+<p><strong>Press:</strong> <strong>Add a source</strong> (beside Sources read). A side panel opens.</p>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“Missing information can be added as a source in a side panel, such as a hospital discharge letter.”</blockquote>
+<p><strong>Press:</strong> <strong>Cancel</strong> in the panel.</p>
+<p><strong>Say:</strong> <span class="say">“Now let’s review the draft care plan.”</span> <strong>Press:</strong> <strong>Review the draft care plan</strong>.</p>
+<h2>5 · Review (1:15 – 2:05)</h2>
+<p><strong>Say:</strong> <span class="say">“On the left are the five focus areas.”</span></p>
+<p><strong>Point to:</strong> <strong>Falls prevention</strong> on the right.</p>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“Falls prevention shows its sources and a point to check: the alert says walker, but her last fall was from a wheelchair.”</blockquote>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“The nurse reads both tabs before deciding. The ‘Why the assistant suggests this’ tab lists the evidence, each piece linked to its source record.”</blockquote>
+<p><strong>Press:</strong> the <strong>Outcomes (2) and interventions (4)</strong> tab.</p>
+<p><strong>Say:</strong> <span class="say">“The second tab holds the outcomes and interventions, which can be edited.”</span></p>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“Every selection is acknowledged with a tick box, which is important for the audit trail.”</blockquote>
+<p><strong>Press:</strong></p>
+<ol><li>Tick <strong>I have checked the outcomes and interventions</strong>.</li><li><strong>Checked now</strong> on the point to check.</li><li><strong>Accept focus area</strong>.</li></ol>
+<p><strong>Say:</strong> <span class="say">“The other areas are reviewed the same way. Nurses can also add their own.”</span></p>
+<p><strong>Press</strong>, for each of the next four areas: <strong>›</strong> (Next focus area), tick the confirmation, <strong>Checked now</strong> if there’s a point to check, then <strong>Accept focus area</strong>.</p>
+<h2>6 · Sign off (2:05 – 2:15)</h2>
+<p><strong>Press:</strong> <strong>Continue to sign off</strong>.</p>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“Sign off shows what will change and what is still open. Nothing changes until a clinician signs off. The nurse ticks the declaration and takes clinical responsibility.”</blockquote>
+<p><strong>Press:</strong> tick the declaration, then <strong>Sign off and activate</strong>.</p>
+<h2>7 · Result and close (2:15 – 2:35)</h2>
+<p><strong>Say:</strong> <span class="say">“Every step is in the audit trail, including who signed off.”</span></p>
+<p><strong>Press:</strong> <strong>View care plan</strong>.</p>
+<p><strong>Say:</strong></p>
+<blockquote class="say">“And here is her new active care plan. The assistant does the reading in seconds. Every suggestion is traceable, every decision is the nurse’s, and the audit trail is complete. That’s time given back to resident care.”</blockquote>
+<p><strong>Stop sharing.</strong></p>
+<hr>
+<h2>If something goes wrong</h2>
+<ul><li><strong>A red “There is a problem” box:</strong> a tick or radio button was missed. Click the link in the box; it jumps to the missing item.</li><li><strong>Continue to sign off doesn’t move on:</strong> one focus area isn’t decided yet. Look for one in the left list without <strong>Accepted</strong>.</li><li><strong>To start again:</strong> press <strong>F5</strong>, then click <strong>Draft care plan</strong>.</li></ul>
+<h2>Numbers you can quote</h2>
+<table><tbody><tr><td>Parts of the record read</td><td>12</td></tr><tr><td>Records read</td><td>101</td></tr><tr><td>Time to summarize</td><td>about 4 seconds</td></tr><tr><td>Focus areas drafted</td><td>5</td></tr></tbody></table>
+<h2>The narrated version</h2>
+<p><code>civica-care-plan-assistant-v6b-demo.htm</code> plays this script by itself, with captions. Click <strong>Play narrated demo</strong> (top right); <strong>Pause</strong>, <strong>Stop</strong> and the timer are in the same corner. Add <code>?silent</code> to the address for captions only. To play it in Teams with sound, tick <strong>Include computer sound</strong> when you share.</p>
+</main>
+</body>
+</html>
